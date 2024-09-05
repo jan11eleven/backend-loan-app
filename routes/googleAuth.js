@@ -3,7 +3,9 @@ const route = express.Router();
 const passport = require("passport");
 const pool = require("../db/db");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const dbSchemaName = process.env["DATABASE_SCHEMA_NAME"];
+const getGoogleAccountByGoogleId = require("../db/queries/google_accounts/getGoogleAccountByGoogleId");
+const createGoogleAccount = require("../db/queries/google_accounts/createGoogleAccount");
+const createUserAndGoogleAccount = require("../db/queries/transactions/createUserAndGoogleAccount");
 
 const googleClientId = process.env["GOOGLE_CLIENT_ID"];
 const googleClientSecret = process.env["GOOGLE_CLIENT_SECRET"];
@@ -19,45 +21,22 @@ passport.use(
 		async function (accessToken, refreshToken, profile, done) {
 			// find user
 			let userData;
-			const result = await pool.query(
-				`SELECT * FROM ${dbSchemaName}.google_accounts WHERE google_id = $1`,
-				[profile.id]
-			);
+			const result = await getGoogleAccountByGoogleId(null, profile.id);
 
 			if (result.rowCount !== 0) {
 				userData = result.rows[0];
-			}
 
-			if (result.rowCount === 0) {
+				return done(null, userData);
+			} else {
 				// if not found, create user
-				await pool.query(
-					`
-                        INSERT INTO ${dbSchemaName}.google_accounts (
-                            google_id, display_name, given_name, family_name, email, photo, provider, updated_on
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, now())
-                    `,
-					[
-						profile.id,
-						profile.displayName,
-						profile.name.givenName,
-						profile.name.familyName,
-						profile.emails[0].value,
-						profile.photos[0].value,
-						profile.provider,
-					]
-				);
+				await createUserAndGoogleAccount(profile);
 
-				const result = await pool.query(
-					`SELECT * FROM ${dbSchemaName}.google_accounts WHERE google_id = $1`,
-					[profile.id]
-				);
+				const result = await getGoogleAccountByGoogleId(null, profile.id);
 
 				if (result.rowCount !== 0) {
 					userData = result.rows[0];
 				}
 
-				return done(null, userData);
-			} else {
 				return done(null, userData);
 			}
 		}
@@ -94,7 +73,6 @@ route.get(
 	passport.authenticate("google", {
 		failureRedirect: "http://localhost:3000/",
 	}),
-	// middleware for user add or create
 	function (req, res) {
 		res.redirect("http://localhost:3000/dashboard");
 	}
