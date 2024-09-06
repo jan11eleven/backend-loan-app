@@ -6,9 +6,13 @@ const app = express();
 
 const session = require("express-session");
 const passport = require("passport");
-const googleAuthRoute = require("./routes/googleAuth");
 const sessionSecret = process.env["SESSION_SECRET"];
 const cors = require("cors");
+
+// file imports
+const googleAuthRoute = require("./routes/googleAuth");
+const isAuthenticated = require("./utils/isAuthenticated");
+const usersRoute = require("./routes/users");
 
 app.use(
 	cors({
@@ -31,6 +35,20 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(googleAuthRoute);
+
+app.use(isAuthenticated);
+
+app.get("/dashboard", (req, res) => {
+	const userData = req.session.passport?.user;
+	res.json({
+		isAuthenticated: true,
+		message: "Successfully logged in.",
+		redirectUrl: null,
+		userData,
+	});
+});
+
+app.use(usersRoute);
 
 app.use(function (err, req, res, next) {
 	if (err) {

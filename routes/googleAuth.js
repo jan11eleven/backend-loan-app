@@ -1,10 +1,8 @@
 const express = require("express");
 const route = express.Router();
 const passport = require("passport");
-const pool = require("../db/db");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const getGoogleAccountByGoogleId = require("../db/queries/google_accounts/getGoogleAccountByGoogleId");
-const createGoogleAccount = require("../db/queries/google_accounts/createGoogleAccount");
 const createUserAndGoogleAccount = require("../db/queries/transactions/createUserAndGoogleAccount");
 
 const googleClientId = process.env["GOOGLE_CLIENT_ID"];
@@ -78,24 +76,4 @@ route.get(
 	}
 );
 
-// Protecting routes
-const isAuthenticated = (req, res, next) => {
-	if (req.isAuthenticated()) return next();
-	res.json({
-		isAuthenticated: false,
-		message: "Please login.",
-		redirectUrl: null,
-		userData: null,
-	});
-};
-
-route.get("/dashboard", isAuthenticated, (req, res) => {
-	const userData = req.session.passport?.user;
-	res.json({
-		isAuthenticated: true,
-		message: "Successfully logged in.",
-		redirectUrl: null,
-		userData,
-	});
-});
 module.exports = route;
