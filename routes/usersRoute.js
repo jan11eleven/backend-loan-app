@@ -9,6 +9,7 @@ route.get("/users", async (req, res) => {
 
 		if (result.rowCount === 0) {
 			res.json({
+				method: "GET",
 				userData: null,
 				status: 200,
 				message: "User table is empty",
@@ -16,6 +17,7 @@ route.get("/users", async (req, res) => {
 		}
 
 		res.json({
+			method: "GET",
 			userData: result.rows,
 			status: 200,
 			message: `${result.rowCount} users fetched successfully.`,
@@ -23,6 +25,7 @@ route.get("/users", async (req, res) => {
 	} catch (error) {
 		console.error("/users Route Error", error);
 		res.json({
+			method: "GET",
 			userData: null,
 			status: 500,
 			message: `Server error!`,
@@ -40,6 +43,7 @@ route.get("/users/:id", async (req, res) => {
 
 		if (result.rowCount === 0) {
 			res.json({
+				method: "GET",
 				userData: null,
 				status: 200,
 				message: `The user with ID ${userId} does not exist`,
@@ -47,6 +51,7 @@ route.get("/users/:id", async (req, res) => {
 		}
 
 		res.json({
+			method: "GET",
 			userData: result.rows[0],
 			status: 200,
 			message: `User data fetched successfully.`,
@@ -54,6 +59,7 @@ route.get("/users/:id", async (req, res) => {
 	} catch (error) {
 		console.error("/users Route Error", error);
 		res.json({
+			method: "GET",
 			userData: null,
 			status: 500,
 			message: `Server error!`,

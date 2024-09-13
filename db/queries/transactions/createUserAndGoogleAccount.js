@@ -10,17 +10,14 @@ async function createUserAndGoogleAccount(profile) {
 	try {
 		await client.query("BEGIN");
 
-		const googleAccountResult = await createGoogleAccount(client, profile);
+		await createGoogleAccount(client, profile);
 
 		const getGoogleAccountData = await getGoogleAccountByGoogleId(
 			client,
 			profile.id
 		);
 
-		const createUserResult = await createUser(
-			client,
-			getGoogleAccountData.rows[0]
-		);
+		await createUser(client, getGoogleAccountData.rows[0]);
 
 		const googleAccountId = getGoogleAccountData.rows[0].id;
 
@@ -28,11 +25,7 @@ async function createUserAndGoogleAccount(profile) {
 
 		const userId = getUserData.rows[0].id;
 
-		const updateGoogleAccountResult = await updateGoogleAccount(
-			client,
-			userId,
-			googleAccountId
-		);
+		await updateGoogleAccount(client, userId, googleAccountId);
 
 		await client.query("COMMIT");
 

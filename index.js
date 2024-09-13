@@ -10,13 +10,16 @@ const sessionSecret = process.env["SESSION_SECRET"];
 const cors = require("cors");
 
 // file imports
-const googleAuthRoute = require("./routes/googleAuth");
+const googleAuthRoute = require("./routes/googleAuthRoute");
 const isAuthenticated = require("./utils/isAuthenticated");
-const usersRoute = require("./routes/users");
+
+// route imports
+const usersRoute = require("./routes/usersRoute");
+const loanProductsRoute = require("./routes/loanProductsRoute");
 
 app.use(
 	cors({
-		origin: "http://localhost:3000", // Replace with your frontend's URL
+		origin: process.env["FRONTEND_URL"], // Replace with your frontend's URL
 		credentials: true,
 	})
 );
@@ -36,6 +39,10 @@ app.use(passport.session());
 
 app.use(googleAuthRoute);
 
+app.use(express.json());
+
+app.use("/api/v1", loanProductsRoute);
+
 app.use(isAuthenticated);
 
 app.get("/dashboard", (req, res) => {
@@ -48,7 +55,7 @@ app.get("/dashboard", (req, res) => {
 	});
 });
 
-app.use(usersRoute);
+app.use("/api/v1", usersRoute);
 
 app.use(function (err, req, res, next) {
 	if (err) {
