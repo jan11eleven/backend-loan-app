@@ -10,7 +10,7 @@ route.post("/loanproducts", async (req, res) => {
 		const isValidLoanProduct = loanProductsBodyValidation(loanProductBody);
 
 		if (!isValidLoanProduct) {
-			res
+			return res
 				.json({
 					error: "Bad Request",
 					message: "Invalid loan product data. Please check the input fields.",
@@ -20,11 +20,13 @@ route.post("/loanproducts", async (req, res) => {
 
 		const result = await createLoanProduct(null, loanProductBody);
 
-		res.json({
-			method: "POST",
-			status: 200,
-			message: "A Loan Product successfully created.",
-		});
+		return res
+			.json({
+				method: "POST",
+				status: 200,
+				message: "A Loan Product successfully created.",
+			})
+			.status(201);
 	} catch (error) {
 		console.error("/loanproducts Route Error", error);
 		res.json({

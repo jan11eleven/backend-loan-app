@@ -8,7 +8,7 @@ route.get("/users", async (req, res) => {
 		const result = await getAllUsers(null);
 
 		if (result.rowCount === 0) {
-			res.json({
+			return res.json({
 				method: "GET",
 				userData: null,
 				status: 200,
@@ -16,7 +16,7 @@ route.get("/users", async (req, res) => {
 			});
 		}
 
-		res.json({
+		return res.json({
 			method: "GET",
 			userData: result.rows,
 			status: 200,
@@ -42,7 +42,7 @@ route.get("/users/:id", async (req, res) => {
 		const result = await getUserById(null, userId);
 
 		if (result.rowCount === 0) {
-			res.json({
+			return res.json({
 				method: "GET",
 				userData: null,
 				status: 200,
@@ -50,7 +50,7 @@ route.get("/users/:id", async (req, res) => {
 			});
 		}
 
-		res.json({
+		return res.json({
 			method: "GET",
 			userData: result.rows[0],
 			status: 200,

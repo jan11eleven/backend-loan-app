@@ -1,9 +1,10 @@
 function loanProductsBodyValidation(loanProduct) {
-	const { userId, productName, loanAmount, term, interestRate } = loanProduct;
+	const { userId, loanProductName, loanAmount, term, interestRate } =
+		loanProduct;
 
 	if (
 		userId == null ||
-		productName == null ||
+		loanProductName == null ||
 		loanAmount == null ||
 		term == null ||
 		interestRate == null
@@ -13,7 +14,7 @@ function loanProductsBodyValidation(loanProduct) {
 
 	if (
 		typeof userId !== "number" ||
-		typeof productName !== "string" ||
+		typeof loanProductName !== "string" ||
 		typeof loanAmount !== "number" ||
 		typeof term !== "number" ||
 		typeof interestRate !== "number"
