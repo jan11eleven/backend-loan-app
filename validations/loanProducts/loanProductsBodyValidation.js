@@ -1,28 +1,17 @@
+const { z } = require("zod");
+
 function loanProductsBodyValidation(loanProduct) {
-	const { userId, loanProductName, loanAmount, term, interestRate } =
-		loanProduct;
+	const LoanProductValidationSchema = z.object({
+		productName: z.string().max(62).min(8),
+		loanAmount: z.number(),
+		term: z.number(),
+		interestRate: z.number(),
+		loanStatus: z.string(),
+	});
 
-	if (
-		userId == null ||
-		loanProductName == null ||
-		loanAmount == null ||
-		term == null ||
-		interestRate == null
-	) {
-		return false;
-	}
+	const result = LoanProductValidationSchema.safeParse(loanProduct);
 
-	if (
-		typeof userId !== "number" ||
-		typeof loanProductName !== "string" ||
-		typeof loanAmount !== "number" ||
-		typeof term !== "number" ||
-		typeof interestRate !== "number"
-	) {
-		return false;
-	}
-
-	return true;
+	return result;
 }
 
 module.exports = loanProductsBodyValidation;

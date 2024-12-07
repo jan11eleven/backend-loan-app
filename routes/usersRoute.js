@@ -46,6 +46,7 @@ route.get("/users/:id", async (req, res) => {
 				method: "GET",
 				userData: null,
 				status: 200,
+				error: "Not found",
 				message: `The user with ID ${userId} does not exist`,
 			});
 		}
@@ -62,6 +63,7 @@ route.get("/users/:id", async (req, res) => {
 			method: "GET",
 			userData: null,
 			status: 500,
+			error,
 			message: `Server error!`,
 		});
 

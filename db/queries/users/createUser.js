@@ -9,9 +9,6 @@ async function createUser(client, googleAccountDetails) {
                 ) VALUES ($1, $2, $3, $4, now())
             `;
 
-		console.log("-------------------");
-		console.log(googleAccountDetails);
-
 		const queryParams = [
 			googleAccountDetails.id,
 			googleAccountDetails.given_name,
@@ -25,7 +22,7 @@ async function createUser(client, googleAccountDetails) {
 
 		return result;
 	} catch (error) {
-		console.error("createUser Error!", error);
+		console.error("createUser Insert Query Error!", error);
 		throw error;
 	}
 }

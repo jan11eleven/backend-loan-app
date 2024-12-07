@@ -16,6 +16,8 @@ const isAuthenticated = require("./utils/isAuthenticated");
 // route imports
 const usersRoute = require("./routes/usersRoute");
 const loanProductsRoute = require("./routes/loanProductsRoute");
+const loaneeRoute = require("./routes/loaneeRoute");
+const loanRoute = require("./routes/loanRoute");
 
 app.use(
 	cors({
@@ -41,9 +43,12 @@ app.use(googleAuthRoute);
 
 app.use(express.json());
 
-app.use("/api/v1", loanProductsRoute);
-
 app.use(isAuthenticated);
+
+app.use("/api/v1", usersRoute);
+app.use("/api/v1", loanProductsRoute);
+app.use("/api/v1", loaneeRoute);
+app.use("/api/v1", loanRoute);
 
 app.get("/dashboard", (req, res) => {
 	const userData = req.session.passport?.user;
@@ -54,8 +59,6 @@ app.get("/dashboard", (req, res) => {
 		userData,
 	});
 });
-
-app.use("/api/v1", usersRoute);
 
 app.use(function (err, req, res, next) {
 	if (err) {
