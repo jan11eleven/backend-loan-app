@@ -43,7 +43,7 @@ app.use(googleAuthRoute);
 
 app.use(express.json());
 
-app.use(isAuthenticated);
+// app.use(isAuthenticated);
 
 app.use("/api/v1", usersRoute);
 app.use("/api/v1", loanProductsRoute);

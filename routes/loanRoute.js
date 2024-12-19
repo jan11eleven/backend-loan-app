@@ -2,6 +2,7 @@ const express = require("express");
 const route = express.Router();
 const createLoan = require("../db/queries/loan/createLoan");
 const loanBodyValidation = require("../validations/loan/loanBodyValidation");
+const getAllLoans = require("../db/queries/loan/getAllLoans");
 
 route.post("/loan", async (req, res) => {
 	try {
@@ -38,6 +39,28 @@ route.post("/loan", async (req, res) => {
 			message: `Server error!`,
 		});
 	}
+});
+
+route.get("/loans", async (req, res) => {
+	try {
+		const loansGetResult = await getAllLoans();
+
+		if (loansGetResult.rowCount === 0) {
+			return res.json({
+				method: "GET",
+				loanData: null,
+				status: 200,
+				message: "Loan table is empty",
+			});
+		}
+
+		return res.json({
+			method: "GET",
+			loanData: loansGetResult.rows,
+			status: 200,
+			message: `${loansGetResult.rowCount} Loans fetched successfully.`,
+		});
+	} catch (error) {}
 });
 
 module.exports = route;
