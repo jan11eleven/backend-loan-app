@@ -1,8 +1,9 @@
 const express = require("express");
 const route = express.Router();
-const createLoan = require("../db/queries/loan/createLoan");
+const createLoanAction = require("../actions/loan/createLoanAction");
 const loanBodyValidation = require("../validations/loan/loanBodyValidation");
-const getAllLoans = require("../db/queries/loan/getAllLoans");
+const getAllLoansDbByUserId = require("../db/queries/loan/getAllLoansDbByUserId");
+const getAllLoansByUidAndSearchDb = require("../db/queries/loan/getAllLoansByUidAndSearchDb");
 
 route.post("/loan", async (req, res) => {
 	try {
@@ -21,7 +22,7 @@ route.post("/loan", async (req, res) => {
 				.status(400);
 		}
 
-		const createLoanResult = await createLoan(null, loanBody);
+		const createLoanActionResult = await createLoanAction(loanBody);
 
 		return res
 			.json({
@@ -43,9 +44,19 @@ route.post("/loan", async (req, res) => {
 
 route.get("/loans", async (req, res) => {
 	try {
-		const loansGetResult = await getAllLoans();
+		// res.setHeader("Cache-Control", "no-store");
+		const page = req.query.page;
+		const perPage = req.query.perpage;
+		const user_id = req.query.user_id;
 
-		if (loansGetResult.rowCount === 0) {
+		const loansGetResult = await getAllLoansDbByUserId(
+			null,
+			page,
+			perPage,
+			user_id
+		);
+
+		if (loansGetResult.totalRows == 0) {
 			return res.json({
 				method: "GET",
 				loanData: null,
@@ -56,9 +67,45 @@ route.get("/loans", async (req, res) => {
 
 		return res.json({
 			method: "GET",
-			loanData: loansGetResult.rows,
+			loanData: loansGetResult.loanData,
 			status: 200,
-			message: `${loansGetResult.rowCount} Loans fetched successfully.`,
+			message: `${loansGetResult.totalRows} Loans fetched successfully.`,
+			totalLoanDataRows: loansGetResult.totalRows,
+		});
+	} catch (error) {}
+});
+
+route.get("/loans/search", async (req, res) => {
+	try {
+		const page = req.query.page;
+		const perPage = req.query.perpage;
+		const user_id = req.query.user_id;
+		const search_text = req.query.search_text;
+
+		const loansGetResult = await getAllLoansByUidAndSearchDb(
+			null,
+			page,
+			perPage,
+			user_id,
+			search_text
+		);
+
+		if (loansGetResult.totalRows == 0) {
+			return res.json({
+				method: "GET",
+				loanData: null,
+				status: 200,
+				message:
+					"No results found for your search. Please try using different keywords or check your input for accuracy.",
+			});
+		}
+
+		return res.json({
+			method: "GET",
+			loanData: loansGetResult.loanData,
+			status: 200,
+			message: `${loansGetResult.totalRows} Loans fetched successfully.`,
+			totalLoanDataRows: loansGetResult.totalRows,
 		});
 	} catch (error) {}
 });

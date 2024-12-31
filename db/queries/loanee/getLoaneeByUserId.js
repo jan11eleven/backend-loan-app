@@ -17,8 +17,6 @@ async function getLoaneeByUserId(client, userId, fields) {
 			? await client.query(queryText, queryParams)
 			: await pool.query(queryText, queryParams);
 
-		console.log(result);
-
 		return result;
 	} catch (error) {
 		console.error("getLoaneeByUserId Query Fetch Error!", error);

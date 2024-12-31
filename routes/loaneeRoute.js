@@ -10,8 +10,6 @@ route.post("/loanee", async (req, res) => {
 
 		const validationResult = loaneeBodyValidation(loaneeBody);
 
-		console.log(validationResult);
-
 		if (!validationResult.success) {
 			return res
 				.json({

@@ -27,8 +27,8 @@ async function createLoanee(loanee) {
 
 		const loaneeQueryText = `
             INSERT INTO ${dbSchemaName}.loanee(
-	        user_id, first_name, middle_name, last_name, date_of_birth, email_address, phone_number, address)
-	        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+	        user_id, first_name, middle_name, last_name, date_of_birth, email_address, phone_number, address, full_name)
+	        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING *;
         `;
 
@@ -41,6 +41,7 @@ async function createLoanee(loanee) {
 			emailAddress,
 			phoneNumber,
 			address,
+			firstName + " " + middleName + " " + lastName,
 		];
 
 		const loaneeResult = await client.query(loaneeQueryText, loaneeQueryParams);

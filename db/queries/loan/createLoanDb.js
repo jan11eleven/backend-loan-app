@@ -1,11 +1,11 @@
 const pool = require("../../db");
 const dbSchemaName = process.env["DATABASE_SCHEMA_NAME"];
 
-async function createLoan(client, loan) {
+async function createLoanDb(client, loan) {
 	try {
 		const queryText = `INSERT INTO ${dbSchemaName}.loan(
-	        user_id, loanee_id, loan_amount, interest_rate, term, loan_status, start_date, end_date)
-	        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+	        user_id, loanee_id, loan_amount, interest_rate, term, loan_status, start_date, end_date, loan_reference_id)
+	        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *;`;
 
 		const queryParams = [
@@ -17,6 +17,7 @@ async function createLoan(client, loan) {
 			loan.loanStatus,
 			loan.startDate,
 			loan.endDate,
+			loan.loanReferenceId,
 		];
 
 		const result = client
@@ -30,4 +31,4 @@ async function createLoan(client, loan) {
 	}
 }
 
-module.exports = createLoan;
+module.exports = createLoanDb;
