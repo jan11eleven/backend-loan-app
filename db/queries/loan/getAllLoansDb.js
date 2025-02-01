@@ -2,7 +2,7 @@ const pool = require("../../db");
 const dbSchemaName = process.env["DATABASE_SCHEMA_NAME"];
 const dbPagination = require("../../dbPagination");
 
-async function getAllLoansDb(client, page = 1, perPage = 3) {
+async function getAllLoansDb(client, page = 1, perPage = 10) {
 	try {
 		const offset = (page - 1) * perPage;
 		const limit = perPage;
